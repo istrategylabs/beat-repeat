@@ -1,0 +1,145 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
+        <style>
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <script>
+            const audioCtx = new AudioContext()
+
+            const masterGain = audioCtx.createGain()
+            masterGain.connect(audioCtx.destination)
+            masterGain.gain.value = 1
+
+            const mp3 = new Promise((resolve, reject) => {
+                fetch('https://s3.amazonaws.com/ludens-beta/3_Ludens_Bass_slap.904e2cae.mp3')
+                .then(res => {
+                    // convert to array buffer
+                    res.arrayBuffer().then(buffer => {
+                        try {
+                            // decode data
+                            audioCtx.decodeAudioData(buffer, decodedData => {
+                                console.log(decodedData)
+                                resolve(decodedData)
+                            })
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }, error => {
+                        reject(error)
+                    })
+                })
+            })
+
+            mp3.then(decodedData => {
+                // part 1
+                // const source = audioCtx.createBufferSource()
+                // source.buffer = decodedData
+                // source.connect(masterGain)
+                // source.start()
+
+
+                // part 2
+                // const scheduleAheadTime = 0.1 // sec
+                // const sampleDuration = 16     // sec
+                // let nextSoundTime = 0.0       // sec
+                //
+                // function scheduleSound(when) {
+                //     const source = audioCtx.createBufferSource()
+                //     source.buffer = decodedData
+                //     source.connect(masterGain)
+                //     source.start(when)
+                // }
+                //
+                // scheduleSound(0)
+                // scheduleSound(sampleDuration)
+            })
+
+
+            // part 3
+            // const bufferLoader = (url) => new Promise((resolve, reject) => {
+            //     // get audio file
+            //     fetch(url)
+            //     .then(res => {
+            //         // convert to array buffer
+            //         res.arrayBuffer().then(buffer => {
+            //             try {
+            //                 // decode data
+            //                 audioCtx.decodeAudioData(buffer, decodedData => {
+            //                     resolve(decodedData)
+            //                 })
+            //             } catch (error) {
+            //                 reject(error)
+            //             }
+            //         }, error => {
+            //             reject(error)
+            //         })
+            //     })
+            // })
+            //
+            // Promise.all([
+            //     bufferLoader('https://s3.amazonaws.com/ludens-beta/3_Ludens_Bass_slap.904e2cae.mp3'),
+            //     bufferLoader('https://s3.amazonaws.com/ludens-beta/10_Ludens_groove_toypiano.93320ce2.mp3')
+            // ]).then(sounds => {
+            //     const scheduleAheadTime = 0.1 // sec
+            //     const sampleDuration = 16     // sec
+            //     let nextSoundTime = 0.0       // sec
+            //     let currentPlaying = sounds   // current playing sounds
+            //
+            //     function nextSound() {
+            //         nextSoundTime = nextSoundTime += sampleDuration
+            //     }
+            //
+            //     function scheduleSounds(when) {
+            //         currentPlaying.forEach(decodedData => {
+            //             const source = audioCtx.createBufferSource()
+            //             source.buffer = decodedData
+            //             source.connect(masterGain)
+            //             source.start(when)
+            //         })
+            //     }
+            //
+            //     function scheduler() {
+            //         while (nextSoundTime < audioCtx.currentTime + scheduleAheadTime) {
+            //             scheduleSounds(nextSoundTime)
+            //             nextSound()
+            //         }
+            //     }
+            //
+            //     const lookahead = 25 // ms
+            //     window.setInterval(() => {
+            //         scheduler()
+            //     }, lookahead)
+            // })
+        </script>
+
+        <!-- <script src="dist/beatRepeat.js"></script> -->
+        <!-- <script> -->
+        <!--     Promise.all([ -->
+        <!--         beatRepeat.load('groove', './dist/groove.mp3'), -->
+        <!--         beatRepeat.load('slap', './dist/slap.mp3'), -->
+        <!--         beatRepeat.load('synth', './dist/synth.mp3') -->
+        <!--     ]) -->
+        <!--     .then(function() { -->
+        <!--         beatRepeat.update(['groove', 'slap']) -->
+        <!--         beatRepeat.play(true) -->
+        <!--         beatRepeat.init() -->
+        <!--     }) -->
+        <!-- </script> -->
+    </body>
+</html>
